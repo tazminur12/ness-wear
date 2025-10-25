@@ -69,7 +69,7 @@ const Contact = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div>
       {/* Hero Section */}
       <section className="relative bg-linear-to-br from-purple-900 via-purple-800 to-pink-800 text-white py-20">
         <div className="absolute inset-0 bg-black/20"></div>

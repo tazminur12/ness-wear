@@ -2,7 +2,7 @@ import React from 'react';
 
 const About = () => {
     return (
-    <div className="min-h-screen bg-gray-50">
+    <div>
       {/* Hero Section */}
       <section className="relative bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 text-white py-20">
         <div className="absolute inset-0 bg-black opacity-20"></div>

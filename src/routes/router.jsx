@@ -3,7 +3,7 @@ import { MainLayout, DashboardLayout } from "../layouts";
 import Home from "../components/Home.jsx";
 import ProductGallery from "../components/ProductGallery.jsx";
 import ProductDetail from "../components/ProductDetail.jsx";
-import About from "../pages/about.jsx";
+import About from "../pages/About.jsx";
 import Contact from "../pages/Contact.jsx";
 import Dashboard from "../pages/Dashboard.jsx";
 import Overview from "../components/dashboard/dashboard-sections/Overview.jsx";

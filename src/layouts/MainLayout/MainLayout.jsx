@@ -3,15 +3,16 @@ import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 import { Outlet } from 'react-router-dom';
 
-const MainLayout = ({ children }) => {
+const MainLayout = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Header */}
       <Header />
       
-    <Outlet>
-
-    </Outlet>
+      {/* Main Content */}
+      <main className="pt-20">
+        <Outlet />
+      </main>
       
       {/* Footer */}
       <Footer />

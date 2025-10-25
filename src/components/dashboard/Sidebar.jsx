@@ -83,7 +83,7 @@ const Sidebar = ({ isOpen, onClose, activeTab, setActiveTab }) => {
                   className={`
                     w-full flex items-center px-3 py-3 text-sm font-medium rounded-xl transition-all duration-200 group
                     ${isActive 
-                      ? 'bg-gradient-to-r from-purple-600 to-pink-600 text-white shadow-lg' 
+                      ? 'bg-linear-to-r from-purple-600 to-pink-600 text-white shadow-lg' 
                       : 'text-gray-700 hover:text-purple-600 hover:bg-purple-50'
                     }
                   `}
