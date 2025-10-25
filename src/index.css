@@ -1,0 +1,10 @@
+@import "tailwindcss";
+@plugin "daisyui";
+@import url('https://fonts.googleapis.com/css2?family=Argent+CF:wght@300;400;500;600;700&display=swap');
+
+@theme {
+  --font-family-argent: "Argent CF", sans-serif;
+  --font-family-body: "Argent CF", sans-serif;
+  --font-family-display: "Argent CF", sans-serif;
+}
+
