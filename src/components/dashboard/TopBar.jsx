@@ -1,4 +1,6 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../contexts/AuthContext';
 import { 
   Bars3Icon, 
   BellIcon, 
@@ -8,9 +10,17 @@ import {
   ArrowRightOnRectangleIcon
 } from '@heroicons/react/24/outline';
 
-const TopBar = ({ onMenuClick, sidebarOpen }) => {
+const TopBar = ({ onMenuClick }) => {
+  const navigate = useNavigate();
+  const { user, logout } = useAuth();
   const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [isNotificationOpen, setIsNotificationOpen] = useState(false);
+
+  const handleLogout = () => {
+    logout();
+    navigate('/login');
+    setIsProfileOpen(false);
+  };
 
   const notifications = [
     { id: 1, title: 'New Order Received', message: 'Order #12345 from John Doe', time: '2 min ago', unread: true },
@@ -22,7 +32,7 @@ const TopBar = ({ onMenuClick, sidebarOpen }) => {
   const unreadCount = notifications.filter(n => n.unread).length;
 
   return (
-    <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-30 backdrop-blur-sm bg-white/95">
+    <header className="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-30 backdrop-blur-sm">
       <div className="px-3 sm:px-4 lg:px-6">
         <div className="flex justify-between items-center h-14 sm:h-16">
           {/* Left side - Menu button and search */}
@@ -58,7 +68,7 @@ const TopBar = ({ onMenuClick, sidebarOpen }) => {
               >
                 <BellIcon className="w-6 h-6 group-hover:scale-110 transition-transform duration-200" />
                 {unreadCount > 0 && (
-                  <span className="absolute -top-1 -right-1 bg-gradient-to-r from-red-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
+                  <span className="absolute -top-1 -right-1 bg-linear-to-r from-red-500 to-pink-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center font-bold shadow-lg animate-pulse">
                     {unreadCount}
                   </span>
                 )}
@@ -116,7 +126,7 @@ const TopBar = ({ onMenuClick, sidebarOpen }) => {
                 onClick={() => setIsProfileOpen(!isProfileOpen)}
                 className="flex items-center space-x-3 p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200 group"
               >
-                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-gradient-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
+                <div className="w-8 h-8 sm:w-9 sm:h-9 bg-linear-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
                   <span className="text-white font-semibold text-xs sm:text-sm">A</span>
                 </div>
                 <div className="hidden sm:block text-left">
@@ -129,8 +139,8 @@ const TopBar = ({ onMenuClick, sidebarOpen }) => {
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                   <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-semibold text-gray-900 font-body">Admin User</p>
-                    <p className="text-xs text-gray-500 font-body">admin@nesswear.com</p>
+                    <p className="text-sm font-semibold text-gray-900 font-body">{user?.name || 'Admin User'}</p>
+                    <p className="text-xs text-gray-500 font-body">{user?.email || 'admin@nesswear.com'}</p>
                   </div>
                   <div className="py-1">
                     <button className="flex items-center w-full px-4 py-2 text-sm text-gray-700 hover:bg-gray-50 font-body">
@@ -142,7 +152,10 @@ const TopBar = ({ onMenuClick, sidebarOpen }) => {
                       Settings
                     </button>
                     <div className="border-t border-gray-100 my-1"></div>
-                    <button className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-body">
+                    <button 
+                      onClick={handleLogout}
+                      className="flex items-center w-full px-4 py-2 text-sm text-red-600 hover:bg-red-50 font-body"
+                    >
                       <ArrowRightOnRectangleIcon className="w-4 h-4 mr-3" />
                       Sign out
                     </button>

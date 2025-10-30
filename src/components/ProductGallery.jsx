@@ -1,16 +1,41 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import ProductCard from './ProductCard';
-import { products, categories, getProductsByCategory } from '../data/products';
+import { useProducts } from '../hooks/useProducts';
+import { useCategories } from '../hooks/useCategories';
 
 const ProductGallery = () => {
   const [selectedCategory, setSelectedCategory] = useState('all');
-  const [filteredProducts, setFilteredProducts] = useState(products);
+  const [filteredProducts, setFilteredProducts] = useState([]);
   const [sortBy, setSortBy] = useState('featured');
   const [priceRange, setPriceRange] = useState([0, 200]);
+  const [maxPrice, setMaxPrice] = useState(200);
   const [showFilters, setShowFilters] = useState(false);
 
+  const { data: productsData, isLoading: productsLoading } = useProducts();
+  const { data: categoriesData = [] } = useCategories();
+
+  const allProducts = useMemo(() => productsData?.products || [], [productsData]);
   useEffect(() => {
-    let filtered = getProductsByCategory(selectedCategory);
+    if (allProducts.length > 0) {
+      const computedMax = Math.ceil(Math.max(...allProducts.map(p => Number(p.price) || 0)) || 200);
+      setMaxPrice(computedMax);
+      setPriceRange(() => [0, computedMax]);
+    }
+  }, [allProducts]);
+
+  const uiCategories = useMemo(() => {
+    return [
+      { name: 'All', value: 'all' },
+      ...categoriesData.map(c => ({ name: c.name, value: c.id }))
+    ];
+  }, [categoriesData]);
+
+  useEffect(() => {
+    let filtered = [...allProducts];
+
+    if (selectedCategory !== 'all') {
+      filtered = filtered.filter(p => p.categoryId === selectedCategory);
+    }
 
     // Apply price filter
     filtered = filtered.filter(product => 
@@ -39,8 +64,20 @@ const ProductGallery = () => {
         break;
     }
 
+    // Normalize images/image for ProductCard safety
+    filtered = filtered.map(p => {
+      const images = Array.isArray(p.images)
+        ? p.images
+        : (p.image ? [p.image] : []);
+      return {
+        ...p,
+        image: p.image || images[0],
+        images,
+      };
+    });
+
     setFilteredProducts(filtered);
-  }, [selectedCategory, sortBy, priceRange]);
+  }, [allProducts, selectedCategory, sortBy, priceRange]);
 
   const handleCategoryChange = (category) => {
     setSelectedCategory(category);
@@ -91,7 +128,7 @@ const ProductGallery = () => {
               <div>
                 <h4 className="font-semibold text-gray-900 mb-3">Categories</h4>
                 <div className="space-y-2">
-                  {categories.map((category) => (
+                  {uiCategories.map((category) => (
                     <button
                       key={category.value}
                       onClick={() => handleCategoryChange(category.value)}
@@ -119,7 +156,7 @@ const ProductGallery = () => {
                   <input
                     type="range"
                     min="0"
-                    max="200"
+                    max={maxPrice}
                     value={priceRange[1]}
                     onChange={(e) => handlePriceRangeChange([priceRange[0], parseInt(e.target.value)])}
                     className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
@@ -160,7 +197,7 @@ const ProductGallery = () => {
           {/* Results Header */}
           <div className="flex items-center justify-between mb-8">
             <div className="text-gray-600">
-              Showing {filteredProducts.length} products
+              {productsLoading ? 'Loading products...' : `Showing ${filteredProducts.length} products`}
             </div>
             <div className="flex items-center space-x-2">
               <span className="text-sm text-gray-600">View:</span>
@@ -178,7 +215,11 @@ const ProductGallery = () => {
           </div>
 
           {/* Products Grid */}
-          {filteredProducts.length > 0 ? (
+          {productsLoading ? (
+            <div className="flex items-center justify-center py-12">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+            </div>
+          ) : filteredProducts.length > 0 ? (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
               {filteredProducts.map((product) => (
                 <ProductCard key={product.id} product={product} />

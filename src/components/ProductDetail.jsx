@@ -1,14 +1,107 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState, useEffect } from 'react';
 import { useParams } from 'react-router-dom';
-import { products } from '../data/products';
+import { useProduct } from '../hooks/useProducts';
+import { useCategories, useSubCategoriesByCategory } from '../hooks/useCategories';
+import { EyeIcon } from '@heroicons/react/24/outline';
 
 const ProductDetail = () => {
   const { id } = useParams();
-  const product = products.find(p => p.id === parseInt(id));
+  const { data: product, isLoading, error } = useProduct(id);
   const [selectedImage, setSelectedImage] = useState(0);
   const [selectedSize, setSelectedSize] = useState('');
   const [selectedColor, setSelectedColor] = useState('');
-  const [quantity, setQuantity] = useState(1);
+  
+
+  const images = useMemo(() => {
+    if (Array.isArray(product?.images) && product.images.length > 0) return product.images;
+    if (product?.image) return [product.image];
+    return ['/vite.svg'];
+  }, [product]);
+  const safeSelected = Math.min(Math.max(selectedImage, 0), images.length - 1);
+
+  const formatPrice = (price) => {
+    const n = Number(price) || 0;
+    return `৳${n.toFixed(2)}`;
+  };
+
+  // Derived pricing aligned with AddProduct fields
+  const regularPrice = Number(product?.price) || 0;
+  const offerPrice = product?.offerPrice != null ? Number(product.offerPrice) : null;
+  const currentPrice = offerPrice != null ? offerPrice : regularPrice;
+  const explicitDiscountPct = product?.discountPercentage != null ? Number(product.discountPercentage) : null;
+  const computedDiscountPct = offerPrice != null && regularPrice > 0
+    ? Math.max(0, Math.round(((regularPrice - offerPrice) / regularPrice) * 100))
+    : null;
+  const discountPctToShow = explicitDiscountPct != null ? explicitDiscountPct : computedDiscountPct;
+
+  // Category/SubCategory names from IDs
+  const { data: categories = [] } = useCategories();
+  const categoryId = product?.categoryId;
+  const { data: subCategories = [] } = useSubCategoriesByCategory(categoryId, { enabled: Boolean(categoryId) });
+
+  const categoryName = useMemo(() => {
+    if (product?.category && typeof product.category === 'string') return product.category;
+    if (!categories || !categoryId) return undefined;
+    return categories.find(c => String(c.id) === String(categoryId))?.name;
+  }, [categories, product, categoryId]);
+
+  const subCategoryName = useMemo(() => {
+    if (product?.subCategory && typeof product.subCategory === 'string') return product.subCategory;
+    const subCategoryId = product?.subCategoryId;
+    if (!subCategories || !subCategoryId) return undefined;
+    return subCategories.find(sc => String(sc.id) === String(subCategoryId))?.name;
+  }, [subCategories, product]);
+
+  // Live viewers indicator (simulated)
+  const [viewerCount, setViewerCount] = useState(() => {
+    // Start with a semi-random realistic number
+    return 50 + Math.floor(Math.random() * 70); // 50-119
+  });
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setViewerCount((prev) => {
+        const delta = Math.floor(Math.random() * 7) - 3; // -3..+3
+        const next = Math.max(12, Math.min(180, prev + delta));
+        return next;
+      });
+    }, 5000);
+    return () => clearInterval(interval);
+  }, []);
+
+  // Share links
+  const DEFAULT_SITE_URL = 'https://nesswearforyou.netlify.app';
+  const pageUrl = (() => {
+    if (typeof window === 'undefined') return DEFAULT_SITE_URL;
+    const { origin, pathname, search } = window.location;
+    const base = origin.includes('localhost') ? DEFAULT_SITE_URL : origin;
+    return `${base}${pathname}${search}`;
+  })();
+  const shareText = `${product?.name || 'Product'} - ${pageUrl}`;
+  // Owner WhatsApp number in international format without '+' (Bangladesh: +880...)
+  const ownerWhatsApp = '8801645460095';
+  const whatsappShare = `https://wa.me/${ownerWhatsApp}?text=${encodeURIComponent(shareText)}`;
+  const facebookShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+
+  if (isLoading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="flex items-center justify-center h-64">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+        </div>
+      </div>
+    );
+  }
+
+  if (error) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="text-center">
+          <h2 className="text-2xl font-bold text-gray-900 mb-4">Failed to load product</h2>
+          <p className="text-gray-600">Please try again.</p>
+        </div>
+      </div>
+    );
+  }
 
   if (!product) {
     return (
@@ -20,10 +113,6 @@ const ProductDetail = () => {
       </div>
     );
   }
-
-  const formatPrice = (price) => {
-    return `$${price.toFixed(2)}`;
-  };
 
   const renderStars = (rating) => {
     const stars = [];
@@ -64,23 +153,7 @@ const ProductDetail = () => {
     return stars;
   };
 
-  const handleAddToCart = () => {
-    if (!selectedSize) {
-      alert('Please select a size');
-      return;
-    }
-    if (!selectedColor) {
-      alert('Please select a color');
-      return;
-    }
-    // Add to cart logic here
-    console.log('Added to cart:', {
-      product,
-      size: selectedSize,
-      color: selectedColor,
-      quantity
-    });
-  };
+  
 
   return (
     <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
@@ -90,16 +163,16 @@ const ProductDetail = () => {
           {/* Main Image */}
           <div className="aspect-square overflow-hidden rounded-lg bg-gray-100">
             <img
-              src={product.images[selectedImage]}
+              src={images[safeSelected]}
               alt={product.name}
               className="w-full h-full object-cover"
             />
           </div>
 
           {/* Thumbnail Images */}
-          {product.images.length > 1 && (
+          {images.length > 1 && (
             <div className="grid grid-cols-4 gap-4">
-              {product.images.map((image, index) => (
+              {images.map((image, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedImage(index)}
@@ -122,7 +195,7 @@ const ProductDetail = () => {
         <div className="space-y-6">
           {/* Badges */}
           <div className="flex space-x-2">
-            {product.isNew && (
+            {product.isNewArrival && (
               <span className="bg-green-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
                 New
               </span>
@@ -132,9 +205,14 @@ const ProductDetail = () => {
                 Trending
               </span>
             )}
-            {product.originalPrice && (
+            {offerPrice != null && offerPrice < regularPrice && (
               <span className="bg-purple-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                Sale
+                {discountPctToShow != null ? `${discountPctToShow}% OFF` : 'Sale'}
+              </span>
+            )}
+            {product.isActive === false && (
+              <span className="bg-gray-500 text-white px-3 py-1 rounded-full text-sm font-semibold">
+                Inactive
               </span>
             )}
           </div>
@@ -142,27 +220,64 @@ const ProductDetail = () => {
           {/* Product Name */}
           <h1 className="text-2xl font-bold text-gray-900">{product.name}</h1>
 
-          {/* Rating */}
-          <div className="flex items-center space-x-4">
+          {/* Rating (stars only) */}
+          <div className="flex items-center">
             <div className="flex items-center">
-              {renderStars(product.rating)}
+              {renderStars(product.rating || 0)}
             </div>
-            <span className="text-gray-600">({product.reviews} reviews)</span>
+          </div>
+
+          {/* Live viewers */}
+          <div className="flex items-center gap-2 text-gray-800">
+            <EyeIcon className="w-5 h-5" aria-hidden="true" />
+            <span className="text-sm">
+              {viewerCount} People viewing this right now
+            </span>
+          </div>
+
+          {/* Share / Contact */}
+          <div className="flex items-center gap-3 pt-2">
+            <a
+              href={whatsappShare}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-green-500 hover:bg-green-600 text-white text-sm font-semibold transition-colors duration-200"
+              aria-label="Share on WhatsApp"
+            >
+              {/* WhatsApp icon */}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" className="w-4 h-4 fill-current" aria-hidden="true">
+                <path d="M19.11 17.27c-.29-.15-1.69-.83-1.95-.92-.26-.1-.45-.15-.64.15-.19.3-.74.92-.9 1.11-.16.19-.34.21-.63.08-.29-.15-1.22-.45-2.33-1.44-.86-.76-1.44-1.7-1.61-1.99-.17-.3-.02-.46.13-.6.14-.14.3-.34.45-.51.15-.17.19-.3.29-.5.1-.19.05-.37-.03-.52-.08-.15-.64-1.53-.88-2.09-.23-.56-.47-.48-.64-.48-.17 0-.37-.02-.57-.02-.2 0-.52.08-.79.37-.27.3-1.04 1.02-1.04 2.49 0 1.47 1.07 2.9 1.22 3.1.15.19 2.1 3.21 5.09 4.5.71.31 1.27.49 1.7.63.71.23 1.35.2 1.86.12.57-.08 1.69-.69 1.93-1.36.24-.66.24-1.23.17-1.36-.07-.13-.26-.21-.55-.36zM16.03 3C8.84 3 3 8.84 3 16.03c0 2.29.61 4.43 1.68 6.28L3 29l6.86-1.8c1.79.98 3.85 1.54 6.16 1.54 7.19 0 13.03-5.84 13.03-13.03C29.05 8.84 23.22 3 16.03 3zm0 23.76c-2.16 0-4.16-.64-5.83-1.75l-.41-.26-4.07 1.07 1.09-3.97-.27-.41a10.52 10.52 0 01-1.61-5.7c0-5.83 4.75-10.58 10.58-10.58 5.83 0 10.58 4.75 10.58 10.58 0 5.83-4.75 10.58-10.58 10.58z"/>
+              </svg>
+              WhatsApp
+            </a>
+            <a
+              href={facebookShare}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-2 px-3 py-2 rounded-md bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold transition-colors duration-200"
+              aria-label="Share on Facebook"
+            >
+              {/* Facebook icon */}
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden="true">
+                <path d="M22 12.06C22 6.48 17.52 2 11.94 2S2 6.48 2 12.06c0 5.01 3.66 9.16 8.44 9.94v-7.03H7.9v-2.91h2.54V9.84c0-2.5 1.49-3.88 3.77-3.88 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.62.77-1.62 1.56v1.87h2.77l-.44 2.91h-2.33V22c4.78-.78 8.44-4.93 8.44-9.94z"/>
+              </svg>
+              Facebook
+            </a>
           </div>
 
           {/* Price */}
           <div className="flex items-center space-x-3">
             <span className="text-2xl font-bold text-gray-900">
-              {formatPrice(product.price)}
+              {formatPrice(currentPrice)}
             </span>
-            {product.originalPrice && (
+            {offerPrice != null && offerPrice < regularPrice && (
               <span className="text-lg text-gray-500 line-through">
-                {formatPrice(product.originalPrice)}
+                {formatPrice(regularPrice)}
               </span>
             )}
-            {product.originalPrice && (
+            {offerPrice != null && offerPrice < regularPrice && (
               <span className="text-sm text-red-600 font-semibold">
-                Save {formatPrice(product.originalPrice - product.price)}
+                Save {formatPrice(regularPrice - offerPrice)}
               </span>
             )}
           </div>
@@ -177,7 +292,7 @@ const ProductDetail = () => {
           <div>
             <h3 className="text-base font-semibold text-gray-900 mb-2">Colors</h3>
             <div className="flex space-x-2">
-              {product.colors.map((color, index) => (
+              {(Array.isArray(product.colors) ? product.colors : []).map((color, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedColor(color)}
@@ -215,7 +330,7 @@ const ProductDetail = () => {
           <div>
             <h3 className="text-base font-semibold text-gray-900 mb-2">Sizes</h3>
             <div className="grid grid-cols-6 gap-1">
-              {product.sizes.map((size, index) => (
+              {(Array.isArray(product.sizes) ? product.sizes : []).map((size, index) => (
                 <button
                   key={index}
                   onClick={() => setSelectedSize(size)}
@@ -234,52 +349,30 @@ const ProductDetail = () => {
             )}
           </div>
 
-          {/* Quantity */}
-          <div>
-            <h3 className="text-base font-semibold text-gray-900 mb-2">Quantity</h3>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-100"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 12H4" />
-                </svg>
-              </button>
-              <span className="text-lg font-semibold w-10 text-center">{quantity}</span>
-              <button
-                onClick={() => setQuantity(quantity + 1)}
-                className="w-8 h-8 border border-gray-300 rounded-md flex items-center justify-center hover:bg-gray-100"
-              >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6v6m0 0v6m0-6h6m-6 0H6" />
-                </svg>
-              </button>
-            </div>
-          </div>
+          
 
-          {/* Add to Cart Button */}
-          <button
-            onClick={handleAddToCart}
-            className="w-full bg-linear-to-r from-purple-600 to-pink-600 text-white py-3 rounded-md font-semibold text-base hover:from-purple-700 hover:to-pink-700 transition-all duration-300 shadow-md"
-          >
-            Add to Cart - {formatPrice(product.price * quantity)}
-          </button>
+          
 
           {/* Additional Info */}
           <div className="border-t border-gray-200 pt-4">
             <div className="grid grid-cols-2 gap-3 text-xs text-gray-600">
               <div>
-                <span className="font-semibold">Category:</span> {product.category}
+                <span className="font-semibold">Category:</span> {categoryName || '—'}
               </div>
               <div>
-                <span className="font-semibold">SKU:</span> NW-{product.id.toString().padStart(3, '0')}
+                <span className="font-semibold">SKU:</span> {product.sku || (product.id ? `NW-${product.id.toString().padStart(3, '0')}` : '—')}
               </div>
               <div>
-                <span className="font-semibold">Material:</span> 100% Cotton
+                <span className="font-semibold">Material:</span> {product.material || '100% Cotton'}
               </div>
               <div>
-                <span className="font-semibold">Care:</span> Machine Wash
+                <span className="font-semibold">Care:</span> {product.care || 'Machine Wash'}
+              </div>
+              <div>
+                <span className="font-semibold">Stock:</span> {product.stock != null ? product.stock : '—'}
+              </div>
+              <div>
+                <span className="font-semibold">SubCategory:</span> {subCategoryName || '—'}
               </div>
             </div>
           </div>

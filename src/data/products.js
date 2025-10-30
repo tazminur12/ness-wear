@@ -211,6 +211,119 @@ export const products = [
     reviews: 45
   },
 
+  // Shoes
+  {
+    id: 15,
+    name: "Korean Style Sneakers",
+    category: "Shoes",
+    price: 89.99,
+    originalPrice: 119.99,
+    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=600&fit=crop"
+    ],
+    colors: ["White", "Black", "Navy", "Pink"],
+    sizes: ["6", "7", "8", "9", "10", "11"],
+    description: "Trendy Korean-style sneakers with modern design and comfortable fit. Perfect for street fashion and casual wear.",
+    isNew: true,
+    isTrending: true,
+    rating: 4.8,
+    reviews: 142
+  },
+  {
+    id: 16,
+    name: "Chunky Platform Sneakers",
+    category: "Shoes",
+    price: 95.99,
+    image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=600&fit=crop"
+    ],
+    colors: ["White", "Black", "Cream"],
+    sizes: ["6", "7", "8", "9", "10"],
+    description: "Popular chunky platform sneakers inspired by Korean street fashion. Features bold design and comfortable platform sole.",
+    isNew: true,
+    isTrending: true,
+    rating: 4.7,
+    reviews: 98
+  },
+  {
+    id: 17,
+    name: "Minimalist White Sneakers",
+    category: "Shoes",
+    price: 79.99,
+    image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=600&fit=crop"
+    ],
+    colors: ["White", "Off-White"],
+    sizes: ["6", "7", "8", "9", "10", "11"],
+    description: "Clean and minimalist white sneakers perfect for Korean fashion aesthetics. Versatile design that goes with any outfit.",
+    isNew: false,
+    isTrending: true,
+    rating: 4.9,
+    reviews: 167
+  },
+  {
+    id: 18,
+    name: "Korean Canvas Shoes",
+    category: "Shoes",
+    price: 59.99,
+    originalPrice: 79.99,
+    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&h=600&fit=crop"
+    ],
+    colors: ["White", "Black", "Navy", "Red"],
+    sizes: ["6", "7", "8", "9", "10"],
+    description: "Classic canvas shoes with Korean street style influence. Lightweight and comfortable for everyday wear.",
+    isNew: true,
+    isTrending: false,
+    rating: 4.6,
+    reviews: 89
+  },
+  {
+    id: 19,
+    name: "Korean Style Boots",
+    category: "Shoes",
+    price: 129.99,
+    image: "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=500&h=600&fit=crop"
+    ],
+    colors: ["Black", "Brown", "Tan"],
+    sizes: ["6", "7", "8", "9", "10"],
+    description: "Stylish Korean-inspired boots perfect for autumn and winter fashion. Features modern design with comfortable fit.",
+    isNew: false,
+    isTrending: true,
+    rating: 4.8,
+    reviews: 76
+  },
+  {
+    id: 20,
+    name: "Korean Slip-On Sneakers",
+    category: "Shoes",
+    price: 69.99,
+    image: "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1595950653106-6c9ebd614d3a?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1606107557195-0e29a4b5b4aa?w=500&h=600&fit=crop"
+    ],
+    colors: ["White", "Black", "Gray", "Pink"],
+    sizes: ["6", "7", "8", "9", "10", "11"],
+    description: "Convenient slip-on sneakers with Korean fashion styling. Easy to wear and perfect for busy lifestyle.",
+    isNew: true,
+    isTrending: false,
+    rating: 4.5,
+    reviews: 54
+  },
+
   // Accessories
   {
     id: 10,
@@ -266,6 +379,116 @@ export const products = [
     isTrending: false,
     rating: 4.7,
     reviews: 134
+  },
+  {
+    id: 21,
+    name: "Korean Style Hair Clips",
+    category: "Accessories",
+    price: 19.99,
+    originalPrice: 29.99,
+    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500&h=600&fit=crop"
+    ],
+    colors: ["Pink", "White", "Black", "Purple"],
+    sizes: ["One Size"],
+    description: "Cute Korean-style hair clips perfect for adding a touch of K-fashion to any outfit. Set of 6 clips.",
+    isNew: true,
+    isTrending: true,
+    rating: 4.8,
+    reviews: 89
+  },
+  {
+    id: 22,
+    name: "Korean Fashion Scarf",
+    category: "Accessories",
+    price: 34.99,
+    image: "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=600&fit=crop"
+    ],
+    colors: ["Cream", "Pink", "Navy", "Black"],
+    sizes: ["One Size"],
+    description: "Elegant Korean-style scarf made from premium silk blend. Perfect for layering and adding sophistication to any look.",
+    isNew: false,
+    isTrending: true,
+    rating: 4.6,
+    reviews: 76
+  },
+  {
+    id: 23,
+    name: "Korean Style Phone Case",
+    category: "Accessories",
+    price: 24.99,
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500&h=600&fit=crop"
+    ],
+    colors: ["Clear", "Pink", "Black", "Purple"],
+    sizes: ["iPhone 14", "iPhone 15", "Samsung Galaxy"],
+    description: "Trendy Korean-style phone case with cute designs. Protective and stylish for your mobile device.",
+    isNew: true,
+    isTrending: false,
+    rating: 4.4,
+    reviews: 45
+  },
+  {
+    id: 24,
+    name: "Korean Fashion Sunglasses",
+    category: "Accessories",
+    price: 59.99,
+    originalPrice: 79.99,
+    image: "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1511499767150-a48a237f0083?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500&h=600&fit=crop"
+    ],
+    colors: ["Black", "Brown", "Pink", "Clear"],
+    sizes: ["One Size"],
+    description: "Stylish Korean-inspired sunglasses with UV protection. Perfect for completing your K-fashion look.",
+    isNew: true,
+    isTrending: true,
+    rating: 4.7,
+    reviews: 112
+  },
+  {
+    id: 25,
+    name: "Korean Style Jewelry Set",
+    category: "Accessories",
+    price: 39.99,
+    image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1601924994987-69e26d50dc26?w=500&h=600&fit=crop"
+    ],
+    colors: ["Gold", "Silver", "Rose Gold"],
+    sizes: ["One Size"],
+    description: "Delicate Korean-style jewelry set including earrings and necklace. Minimalist design perfect for everyday wear.",
+    isNew: false,
+    isTrending: true,
+    rating: 4.9,
+    reviews: 156
+  },
+  {
+    id: 26,
+    name: "Korean Fashion Belt",
+    category: "Accessories",
+    price: 29.99,
+    image: "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=600&fit=crop",
+    images: [
+      "https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=500&h=600&fit=crop",
+      "https://images.unsplash.com/photo-1588850561407-ed78c282e89b?w=500&h=600&fit=crop"
+    ],
+    colors: ["Black", "Brown", "White"],
+    sizes: ["S", "M", "L"],
+    description: "Versatile Korean-style belt perfect for cinching dresses or adding definition to oversized tops.",
+    isNew: true,
+    isTrending: false,
+    rating: 4.5,
+    reviews: 67
   }
 ];
 
@@ -274,6 +497,7 @@ export const categories = [
   { name: "T-Shirt", value: "T-Shirt" },
   { name: "Hoodie", value: "Hoodie" },
   { name: "Trousers", value: "Trousers" },
+  { name: "Shoes", value: "Shoes" },
   { name: "Accessories", value: "Accessories" }
 ];
 

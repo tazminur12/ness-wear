@@ -6,6 +6,7 @@ import TopBar from '../../components/dashboard/TopBar';
 // Create context for dashboard state
 const DashboardContext = createContext();
 
+// eslint-disable-next-line react-refresh/only-export-components
 export const useDashboard = () => {
   const context = useContext(DashboardContext);
   if (!context) {
@@ -37,7 +38,6 @@ const DashboardLayout = () => {
         <Sidebar 
           isOpen={sidebarOpen} 
           onClose={() => setSidebarOpen(false)}
-          activeTab={activeTab}
           setActiveTab={setActiveTab}
         />
         
@@ -46,7 +46,6 @@ const DashboardLayout = () => {
           {/* Top Bar */}
           <TopBar 
             onMenuClick={toggleSidebar}
-            sidebarOpen={sidebarOpen}
           />
           
           {/* Dashboard Content */}

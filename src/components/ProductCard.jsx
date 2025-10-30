@@ -2,40 +2,42 @@ import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product }) => {
-  const [isHovered, setIsHovered] = useState(false);
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isHoveringImage, setIsHoveringImage] = useState(false);
+  const [transformOrigin, setTransformOrigin] = useState('center');
 
-  const handleMouseEnter = () => {
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setIsHovered(false);
-    setCurrentImageIndex(0);
-  };
-
-  const handleImageHover = (index) => {
-    setCurrentImageIndex(index);
-  };
+  // Always show a single image on the card (first available)
+  const images = Array.isArray(product?.images) ? product.images : (product?.image ? [product.image] : []);
+  const mainImage = images[0] || '/vite.svg';
 
   const formatPrice = (price) => {
-    return `$${price.toFixed(0)}`;
+    return `৳${price.toFixed(0)}`;
   };
+
+  
 
   return (
     <div
       className="group bg-white rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 overflow-hidden border border-gray-100"
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
     >
       {/* Image Container */}
       <div className="relative overflow-hidden bg-gray-50">
         <Link to={`/product/${product.id}`}>
-          <div className="relative h-64 lg:h-72">
+          <div
+            className="relative h-64 lg:h-72"
+            onMouseEnter={() => setIsHoveringImage(true)}
+            onMouseLeave={() => setIsHoveringImage(false)}
+            onMouseMove={(e) => {
+              const rect = e.currentTarget.getBoundingClientRect();
+              const x = ((e.clientX - rect.left) / rect.width) * 100;
+              const y = ((e.clientY - rect.top) / rect.height) * 100;
+              setTransformOrigin(`${x}% ${y}%`);
+            }}
+          >
             <img
-              src={product.images[currentImageIndex]}
+              src={mainImage}
               alt={product.name}
-              className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              className={`w-full h-full object-cover transition-transform duration-500 ease-out will-change-transform ${isHoveringImage ? 'cursor-zoom-out' : 'cursor-zoom-in'}`}
+              style={{ transform: isHoveringImage ? 'scale(1.25)' : 'scale(1)', transformOrigin }}
             />
             
             {/* Badges */}
@@ -63,7 +65,7 @@ const ProductCard = ({ product }) => {
             </div>
 
             {/* View Details Button */}
-            <div className={`absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
+            <div className={`absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300 flex items-center justify-center opacity-0 group-hover:opacity-100`}>
               <Link
                 to={`/product/${product.id}`}
                 className="bg-white text-gray-800 px-4 py-2 rounded-lg font-medium text-sm hover:bg-gray-100 transition-colors duration-200 shadow-lg"
@@ -71,24 +73,7 @@ const ProductCard = ({ product }) => {
                 View Details
               </Link>
             </div>
-
-            {/* Image Thumbnails */}
-            {product.images.length > 1 && (
-              <div className={`absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-1 transition-opacity duration-300 ${isHovered ? 'opacity-100' : 'opacity-0'}`}>
-                {product.images.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setCurrentImageIndex(index)}
-                    className={`w-6 h-6 rounded-full border-2 overflow-hidden ${
-                      currentImageIndex === index ? 'border-white' : 'border-gray-300'
-                    }`}
-                    onMouseEnter={() => handleImageHover(index)}
-                  >
-                    <img src={image} alt={`${product.name} ${index + 1}`} className="w-full h-full object-cover" />
-                  </button>
-                ))}
-              </div>
-            )}
+            {/* No thumbnails on card; single image display only */}
           </div>
         </Link>
       </div>

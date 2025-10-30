@@ -10,15 +10,19 @@ import {
   DocumentTextIcon,
   TruckIcon,
   CreditCardIcon,
-  XMarkIcon
+  XMarkIcon,
+  Squares2X2Icon,
+  TagIcon
 } from '@heroicons/react/24/outline';
 
-const Sidebar = ({ isOpen, onClose, activeTab, setActiveTab }) => {
+const Sidebar = ({ isOpen, onClose, setActiveTab }) => {
   const location = useLocation();
   
   const navigationItems = [
     { id: 'overview', name: 'Overview', icon: HomeIcon, href: '/dashboard/overview' },
     { id: 'products', name: 'Products', icon: ShoppingBagIcon, href: '/dashboard/products' },
+    { id: 'categories', name: 'Categories', icon: Squares2X2Icon, href: '/dashboard/categories' },
+    { id: 'subcategories', name: 'SubCategories', icon: TagIcon, href: '/dashboard/subcategories' },
     { id: 'orders', name: 'Orders', icon: DocumentTextIcon, href: '/dashboard/orders' },
     { id: 'customers', name: 'Customers', icon: UserGroupIcon, href: '/dashboard/customers' },
     { id: 'analytics', name: 'Analytics', icon: ChartBarIcon, href: '/dashboard/analytics' },
@@ -52,11 +56,11 @@ const Sidebar = ({ isOpen, onClose, activeTab, setActiveTab }) => {
         {/* Sidebar Header */}
         <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
           <div className="flex items-center space-x-3">
-            <div className="w-8 h-8 bg-gradient-to-br from-purple-600 via-purple-700 to-pink-600 rounded-lg flex items-center justify-center shadow-lg">
+            <div className="w-8 h-8 bg-black rounded-lg flex items-center justify-center shadow-lg">
               <span className="text-white font-bold text-lg">N</span>
             </div>
             <div>
-              <h1 className="text-lg font-bold text-gray-900">NESS WEAR</h1>
+              <h1 className="text-lg font-bold text-black">NESS WEAR</h1>
               <p className="text-xs text-gray-500">Admin Dashboard</p>
             </div>
           </div>
@@ -107,7 +111,7 @@ const Sidebar = ({ isOpen, onClose, activeTab, setActiveTab }) => {
         {/* Sidebar Footer */}
         <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-gray-200">
           <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-xl">
-            <div className="w-8 h-8 bg-linear-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center">
+            <div className="w-8 h-8 bg-black rounded-full flex items-center justify-center">
               <span className="text-white font-semibold text-sm">A</span>
             </div>
             <div className="flex-1 min-w-0">
