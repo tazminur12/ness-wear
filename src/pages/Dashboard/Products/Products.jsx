@@ -191,7 +191,7 @@ const Products = () => {
               
               <div className="text-sm text-gray-500 mb-3">
                 <p className="font-medium">Category: {getCategoryName(product.categoryId)}</p>
-                <p className="font-bold text-lg text-purple-600">${product.price}</p>
+                <p className="font-bold text-lg text-purple-600">৳{product.price}</p>
                 <p>Stock: {product.stock || 0}</p>
               </div>
 

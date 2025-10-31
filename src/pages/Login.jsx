@@ -116,12 +116,6 @@ const Login = () => {
             </button>
           </form>
 
-          {/* Demo Credentials */}
-          <div className="mt-6 pt-6 border-t border-gray-200">
-            <p className="text-xs text-gray-600 text-center">
-              Admin Credentials: email: <strong>nesswearadmin@gmail.com</strong>, password: <strong>tanvir_evan</strong>
-            </p>
-          </div>
         </div>
       </div>
     </div>

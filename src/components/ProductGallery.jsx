@@ -149,9 +149,9 @@ const ProductGallery = () => {
                 <h4 className="font-semibold text-gray-900 mb-3">Price Range</h4>
                 <div className="space-y-4">
                   <div className="flex items-center space-x-2">
-                    <span className="text-sm text-gray-600">${priceRange[0]}</span>
+                    <span className="text-sm text-gray-600">৳{priceRange[0]}</span>
                     <span className="text-sm text-gray-600">-</span>
-                    <span className="text-sm text-gray-600">${priceRange[1]}</span>
+                    <span className="text-sm text-gray-600">৳{priceRange[1]}</span>
                   </div>
                   <input
                     type="range"

@@ -127,10 +127,10 @@ const TopBar = ({ onMenuClick }) => {
                 className="flex items-center space-x-3 p-2.5 text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-xl transition-all duration-200 group"
               >
                 <div className="w-8 h-8 sm:w-9 sm:h-9 bg-linear-to-r from-purple-600 to-pink-600 rounded-full flex items-center justify-center shadow-lg group-hover:shadow-xl transition-all duration-200 group-hover:scale-105">
-                  <span className="text-white font-semibold text-xs sm:text-sm">A</span>
+                  <span className="text-white font-semibold text-xs sm:text-sm">TE</span>
                 </div>
                 <div className="hidden sm:block text-left">
-                  <p className="text-xs sm:text-sm font-semibold text-gray-900">Admin User</p>
+                  <p className="text-xs sm:text-sm font-semibold text-gray-900">Tanvir Evan</p>
                   <p className="text-xs text-gray-500">Administrator</p>
                 </div>
               </button>
@@ -139,7 +139,7 @@ const TopBar = ({ onMenuClick }) => {
               {isProfileOpen && (
                 <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-gray-200 py-2 z-50">
                   <div className="px-4 py-3 border-b border-gray-100">
-                    <p className="text-sm font-semibold text-gray-900 font-body">{user?.name || 'Admin User'}</p>
+                    <p className="text-sm font-semibold text-gray-900 font-body">Tanvir Evan</p>
                     <p className="text-xs text-gray-500 font-body">{user?.email || 'admin@nesswear.com'}</p>
                   </div>
                   <div className="py-1">

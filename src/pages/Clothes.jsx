@@ -195,8 +195,8 @@ const Clothes = () => {
                       className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer slider"
                     />
                     <div className="flex justify-between text-xs text-gray-600 font-body">
-                      <span>${priceRange[0]}</span>
-                      <span>${priceRange[1]}</span>
+                      <span>৳{priceRange[0]}</span>
+                      <span>৳{priceRange[1]}</span>
                     </div>
                   </div>
                 </div>

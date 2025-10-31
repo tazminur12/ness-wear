@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { ArrowLeftIcon } from '@heroicons/react/24/outline';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useCategory, useUpdateCategory } from '../../../hooks/useCategories';
@@ -18,6 +18,7 @@ const EditCategory = () => {
   const [loading, setLoading] = useState(false);
   const { data: category, isLoading: initialLoading, error } = useCategory(id);
   const { mutateAsync: updateCategory, isPending: updating } = useUpdateCategory();
+  const fileInputRef = useRef(null);
 
   useEffect(() => {
     if (category) {
@@ -36,6 +37,82 @@ const EditCategory = () => {
       ...prev,
       [name]: type === 'checkbox' ? checked : value
     }));
+  };
+
+  const handleImageFile = (e) => {
+    const file = e.target.files && e.target.files[0];
+    if (!file) return;
+
+    const compressImage = (fileToCompress, maxWidth = 1200, maxHeight = 1200, quality = 0.8) => {
+      return new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onerror = () => reject(new Error('Failed to read file'));
+        reader.onload = () => {
+          const img = new Image();
+          img.onload = () => {
+            let { width, height } = img;
+            const aspect = width / height;
+            if (width > maxWidth || height > maxHeight) {
+              if (aspect > 1) {
+                width = maxWidth;
+                height = Math.round(maxWidth / aspect);
+              } else {
+                height = maxHeight;
+                width = Math.round(maxHeight * aspect);
+              }
+            }
+            const canvas = document.createElement('canvas');
+            canvas.width = width;
+            canvas.height = height;
+            const ctx = canvas.getContext('2d');
+            ctx.drawImage(img, 0, 0, width, height);
+            // Prefer JPEG to greatly reduce size; fall back to PNG if transparency is needed
+            const mimeType = 'image/jpeg';
+            const dataUrl = canvas.toDataURL(mimeType, quality);
+            resolve(dataUrl);
+          };
+          img.onerror = () => reject(new Error('Invalid image file'));
+          img.src = reader.result;
+        };
+        reader.readAsDataURL(fileToCompress);
+      });
+    };
+
+    compressImage(file)
+      .then((dataUrl) => {
+        // Block if still too large (> 500KB)
+        const byteString = atob(dataUrl.split(',')[1] || '');
+        const sizeKb = Math.round(byteString.length / 1024);
+        if (sizeKb > 500) {
+          Swal.fire({
+            title: 'Image too large',
+            text: 'Please choose a smaller image or use an external image URL. (Max ~500KB)',
+            icon: 'warning',
+            confirmButtonText: 'OK',
+            confirmButtonColor: '#8b5cf6'
+          });
+          if (fileInputRef.current) fileInputRef.current.value = '';
+          return;
+        }
+        setFormData(prev => ({ ...prev, image: dataUrl }));
+      })
+      .catch(() => {
+        Swal.fire({
+          title: 'Upload failed',
+          text: 'Could not process the selected image. Please try another file.',
+          icon: 'error',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#ef4444'
+        });
+        if (fileInputRef.current) fileInputRef.current.value = '';
+      });
+  };
+
+  const handleRemoveImage = () => {
+    setFormData(prev => ({ ...prev, image: '' }));
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   const handleSubmit = async (e) => {
@@ -157,6 +234,18 @@ const EditCategory = () => {
             className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
             placeholder="https://example.com/image.jpg"
           />
+          <div className="mt-3">
+            <label className="block text-sm font-medium text-gray-700 mb-2">
+              Or upload image
+            </label>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept="image/*"
+              onChange={handleImageFile}
+              className="block w-full text-sm text-gray-700 file:mr-4 file:py-2 file:px-4 file:rounded-xl file:border-0 file:text-sm file:font-semibold file:bg-purple-50 file:text-purple-700 hover:file:bg-purple-100"
+            />
+          </div>
         </div>
 
         {/* Status Toggle */}
@@ -182,6 +271,15 @@ const EditCategory = () => {
               alt="Category preview"
               className="w-full h-64 object-cover rounded-xl border border-gray-200"
             />
+            <div className="mt-3 flex justify-end">
+              <button
+                type="button"
+                onClick={handleRemoveImage}
+                className="px-4 py-2 border border-gray-300 text-gray-700 rounded-xl hover:bg-gray-50 transition-colors duration-200 font-medium"
+              >
+                Remove image
+              </button>
+            </div>
           </div>
         )}
 

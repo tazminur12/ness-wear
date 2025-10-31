@@ -78,9 +78,9 @@ const ProductDetail = () => {
   })();
   const shareText = `${product?.name || 'Product'} - ${pageUrl}`;
   // Owner WhatsApp number in international format without '+' (Bangladesh: +880...)
-  const ownerWhatsApp = '8801645460095';
+  const ownerWhatsApp = '01310001925';
   const whatsappShare = `https://wa.me/${ownerWhatsApp}?text=${encodeURIComponent(shareText)}`;
-  const facebookShare = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(pageUrl)}`;
+  const facebookShare = 'https://www.facebook.com/festiveknitwear';
 
   if (isLoading) {
     return (
